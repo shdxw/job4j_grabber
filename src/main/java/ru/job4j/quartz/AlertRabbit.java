@@ -26,21 +26,23 @@ public class AlertRabbit {
             scheduler.start();
             Properties prop = AlertRabbit.getProp("src/main/resources/rabbit.properties");
             JobDataMap data = new JobDataMap();
-            data.put("connect", getConnection());
-            JobDetail job = newJob(Rabbit.class)
-                    .usingJobData(data)
-                    .build();
-            SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(Integer.parseInt(prop.getProperty("rabbit.interval")))
-                    .repeatForever();
-            Trigger trigger = newTrigger()
-                    .startNow()
-                    .withSchedule(times)
-                    .build();
-            scheduler.scheduleJob(job, trigger);
-            Thread.sleep(10000);
-            scheduler.shutdown();
-        } catch (SchedulerException se) {
+            try (Connection connect = getConnection(prop)) {
+                data.put("connect", connect);
+                JobDetail job = newJob(Rabbit.class)
+                        .usingJobData(data)
+                        .build();
+                SimpleScheduleBuilder times = simpleSchedule()
+                        .withIntervalInSeconds(Integer.parseInt(prop.getProperty("rabbit.interval")))
+                        .repeatForever();
+                Trigger trigger = newTrigger()
+                        .startNow()
+                        .withSchedule(times)
+                        .build();
+                scheduler.scheduleJob(job, trigger);
+                Thread.sleep(10000);
+                scheduler.shutdown();
+            }
+        } catch (SchedulerException | SQLException se) {
             se.printStackTrace();
         }
     }
@@ -56,23 +58,22 @@ public class AlertRabbit {
         return cfg;
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection(Properties cfg) {
         if (connection == null) {
-            Properties cfg = AlertRabbit.getProp("src/main/resources/rabbit.properties");
             try {
                 Class.forName(cfg.getProperty("jdbc.driver"));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            try (Connection cnct = DriverManager.getConnection(
-                    cfg.getProperty("jdbc.url"),
-                    cfg.getProperty("jdbc.username"),
-                    cfg.getProperty("jdbc.password")
-            )) {
-                connection = cnct;
+            try {
+                connection = DriverManager.getConnection(
+                        cfg.getProperty("jdbc.url"),
+                        cfg.getProperty("jdbc.username"),
+                        cfg.getProperty("jdbc.password"));
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+
         }
         return connection;
     }
@@ -81,10 +82,12 @@ public class AlertRabbit {
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             System.out.println("Rabbit runs here ...");
-            try (Connection stm = (Connection) context.getJobDetail().getJobDataMap().get("connect");
-                 PreparedStatement pr = stm.prepareStatement("Insert into rabbit(created_date) values(now())")) {
+            Connection stm = (Connection) context.getJobDetail().getJobDataMap().get("connect");
+            try {
+                PreparedStatement pr = stm.prepareStatement("Insert into rabbit(created_date) values(now())");
                 pr.execute();
-            } catch (SQLException throwables) {
+            }
+            catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         }
