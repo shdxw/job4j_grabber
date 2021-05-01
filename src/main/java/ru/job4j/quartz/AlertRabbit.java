@@ -83,8 +83,8 @@ public class AlertRabbit {
         public void execute(JobExecutionContext context) throws JobExecutionException {
             System.out.println("Rabbit runs here ...");
             Connection stm = (Connection) context.getJobDetail().getJobDataMap().get("connect");
-            try {
-                PreparedStatement pr = stm.prepareStatement("Insert into rabbit(created_date) values(now())");
+            try (PreparedStatement pr = stm.prepareStatement("Insert into rabbit(created_date) values(now())");
+            ){
                 pr.execute();
             }
             catch (SQLException throwables) {
