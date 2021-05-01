@@ -7,7 +7,7 @@ import org.jsoup.select.Elements;
 
 public class SqlRuParse {
     public static void main(String[] args) throws Exception {
-        for (int i = 1; i <= 711; i++) {
+        for (int i = 1; i <= 5; i++) {
             Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers" + "/" + i).get();
             Elements table = doc.select(".forumTable");
             Elements row = table.select("tr");
@@ -20,6 +20,6 @@ public class SqlRuParse {
                 System.out.println(href);
             }
         }
-        }
+    }
 
 }
