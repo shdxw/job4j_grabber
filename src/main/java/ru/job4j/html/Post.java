@@ -3,10 +3,10 @@ package ru.job4j.html;
 import java.time.LocalDateTime;
 
 public class Post {
-    String name;
-    LocalDateTime dateTime;
-    String text;
-    String link;
+    private String name;
+    private LocalDateTime dateTime;
+    private String text;
+    private String link;
 
     public Post(String name, LocalDateTime dateTime, String text, String link) {
         this.name = name;
