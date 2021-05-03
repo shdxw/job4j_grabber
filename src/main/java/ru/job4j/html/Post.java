@@ -30,4 +30,14 @@ public class Post {
     public String getLink() {
         return link;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "name='" + name + '\'' +
+                ", dateTime=" + dateTime +
+                ", text='" + text + '\'' +
+                ", link='" + link + '\'' +
+                '}';
+    }
 }
