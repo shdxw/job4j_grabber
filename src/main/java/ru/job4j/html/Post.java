@@ -40,4 +40,5 @@ public class Post {
                 ", link='" + link + '\'' +
                 '}';
     }
+
 }
