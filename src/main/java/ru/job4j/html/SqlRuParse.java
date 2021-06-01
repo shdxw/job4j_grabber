@@ -20,10 +20,15 @@ public class SqlRuParse implements Parse {
     }
 
     @Override
-    public List<Post> list(String link) throws IOException {
+    public List<Post> list(String link) {
         List<Post> posts = new ArrayList<>();
 
-        Document doc = Jsoup.connect(link).get();
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(link).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Elements table = doc.select(".forumTable");
         Elements row = table.select("tr");
         row.remove(0);
@@ -35,8 +40,13 @@ public class SqlRuParse implements Parse {
     }
 
     @Override
-    public Post detail(String link) throws IOException {
-        Document localHref = Jsoup.connect(link).get();
+    public Post detail(String link) {
+        Document localHref = null;
+        try {
+            localHref = Jsoup.connect(link).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Element elementsOfPost = localHref.getElementsByClass("msgTable").first()
                 .child(0);
         String name = elementsOfPost.child(0).child(0).text();
@@ -46,7 +56,7 @@ public class SqlRuParse implements Parse {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         List<Post> posts = new ArrayList<>();
         Parse sqlparser = new SqlRuParse(new SqlRuDateTimeParser());
         for (int i = 1; i < 2; i++) {
