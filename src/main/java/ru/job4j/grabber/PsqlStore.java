@@ -4,7 +4,6 @@ import ru.job4j.html.Post;
 
 import java.io.InputStream;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -57,7 +56,8 @@ public class PsqlStore implements Store, AutoCloseable {
                             resultSet.getString("name"),
                             resultSet.getTimestamp("created").toLocalDateTime(),
                             resultSet.getString("info"),
-                            resultSet.getString("link")
+                            resultSet.getString("link"),
+                            resultSet.getInt("id")
                     ));
                 }
             }
@@ -77,7 +77,8 @@ public class PsqlStore implements Store, AutoCloseable {
                             resultSet.getString("name"),
                             resultSet.getTimestamp("created").toLocalDateTime(),
                             resultSet.getString("info"),
-                            resultSet.getString("link")
+                            resultSet.getString("link"),
+                            resultSet.getInt("id")
                     );
                 } else {
                     return null;
@@ -98,7 +99,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
     public static void main(String[] args) {
         Store store = new PsqlStore();
-        store.save(new Post("rabota", LocalDateTime.now(), "test", "1job.ru"));
+        //store.save(new Post("rabota", LocalDateTime.now(), "test", "1job.ru", 1));
         System.out.println(store.getAll().toString());
         System.out.println(store.findById(1).toString());
     }

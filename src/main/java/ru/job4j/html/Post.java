@@ -7,12 +7,18 @@ public class Post {
     private LocalDateTime dateTime;
     private String text;
     private String link;
+    private int id;
 
-    public Post(String name, LocalDateTime dateTime, String text, String link) {
+    public Post(String name, LocalDateTime dateTime, String text, String link, int id) {
         this.name = name;
         this.dateTime = dateTime;
         this.text = text;
         this.link = link;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -38,7 +44,7 @@ public class Post {
                 ", dateTime=" + dateTime +
                 ", text='" + text + '\'' +
                 ", link='" + link + '\'' +
+                ", id=" + id +
                 '}';
     }
-
 }

@@ -45,6 +45,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         return date.withHour(Integer.parseInt(time[0])).withMinute(Integer.parseInt(time[1]));
     }
 
+
     public static void main(String[] args) {
         SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
         LocalDateTime date = parser.parse("сегодня, 22:29");

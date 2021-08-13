@@ -52,7 +52,7 @@ public class SqlRuParse implements Parse {
         String name = elementsOfPost.child(0).child(0).text();
         String text = elementsOfPost.child(1).child(1).text();
         String date = elementsOfPost.child(2).child(0).text().split("\\[")[0].trim();//работаем с постом
-        return new Post(name, this.parser.parse(date), text, link);
+        return new Post(name, this.parser.parse(date), text, link, 0);
 
     }
 
